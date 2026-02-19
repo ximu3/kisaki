@@ -157,7 +157,8 @@ export class WindowService implements IService {
       fullScreen: false
     })
 
-    const icon = platform.isLinux ? join(__dirname, '../../resources/icon.png') : undefined
+    const icon =
+      platform.isLinux || is.dev ? join(__dirname, '../../resources/icon.png') : undefined
 
     // Create the browser window
     this.mainWindow = new BrowserWindow({
@@ -168,7 +169,7 @@ export class WindowService implements IService {
       show: false,
       frame: false,
       autoHideMenuBar: true,
-      ...(platform.isLinux ? { icon } : {}),
+      ...(platform.isLinux || is.dev ? { icon } : {}),
       webPreferences: {
         preload: join(__dirname, '../preload/index.js'),
         sandbox: false,
