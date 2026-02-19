@@ -1,0 +1,36 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Plugin Dev",
+      "type": "shell",
+      "command": "npx",
+      "args": ["kisaki-plugin", "dev"],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "isBackground": true,
+      "problemMatcher": {
+        "owner": "plugin-dev",
+        "pattern": [
+          {
+            "regexp": "^(__never__):(\\d+):(.*)$",
+            "file": 1,
+            "line": 2,
+            "message": 3
+          }
+        ],
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^\\[KISAKI_PLUGIN_DEV\\] START$",
+          "endsPattern": "^\\[KISAKI_PLUGIN_DEV\\] READY main=9229 renderer=9222$"
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "dedicated",
+        "clear": true
+      }
+    }
+  ]
+}

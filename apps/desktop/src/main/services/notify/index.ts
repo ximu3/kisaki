@@ -1,0 +1,1 @@
+export { NotifyService } from './service'

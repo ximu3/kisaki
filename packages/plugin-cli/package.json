@@ -1,0 +1,44 @@
+{
+  "name": "@kisaki/plugin-cli",
+  "version": "0.0.1",
+  "description": "CLI tools for Kisaki plugin development",
+  "type": "module",
+  "bin": {
+    "kisaki-plugin": "./dist/index.mjs"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsdown",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --cache --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "commander": "^13.1.0",
+    "kolorist": "^1.8.0",
+    "open": "^10.1.0",
+    "semver": "^7.7.2"
+  },
+  "devDependencies": {
+    "@types/archiver": "^6.0.4",
+    "@types/node": "^22.19.1",
+    "@types/semver": "^7.7.0",
+    "typescript": "^5.9.3"
+  },
+  "peerDependencies": {
+    "typescript": ">=5.0.0"
+  },
+  "keywords": [
+    "kisaki",
+    "plugin",
+    "cli",
+    "build"
+  ],
+  "license": "MIT"
+}

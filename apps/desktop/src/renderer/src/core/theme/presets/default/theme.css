@@ -1,0 +1,112 @@
+:root {
+  /* Slightly larger radius for friendly feel */
+  --radius: 6px;
+
+  /* Light theme - Clean with blue accents */
+  --background: var(--color-slate-50);
+  --foreground: var(--color-slate-950);
+
+  /* Surface - For elevated content areas (sidebar, titlebar, cards) */
+  --surface: var(--color-slate-100);
+  --surface-foreground: var(--color-slate-950);
+
+  /* Card - Subtle elevation */
+  --card: transparent;
+  --card-foreground: var(--color-slate-950);
+
+  /* Popover/Dropdown */
+  --popover: var(--color-slate-50);
+  --popover-foreground: var(--color-slate-950);
+
+  /* Primary - Vibrant blue */
+  --primary: var(--color-blue-500);
+  --primary-foreground: var(--color-slate-50);
+
+  /* Secondary - Muted blue-gray */
+  --secondary: var(--color-slate-200);
+  --secondary-foreground: var(--color-slate-600);
+
+  /* Muted */
+  --muted: var(--color-slate-200);
+  --muted-foreground: var(--color-slate-500);
+
+  /* Accent - Light blue tint */
+  --accent: var(--color-slate-300);
+  --accent-foreground: var(--color-slate-950);
+
+  /* Semantic colors */
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-slate-50);
+  --info: var(--color-blue-500);
+  --info-foreground: var(--color-slate-50);
+  --success: var(--color-green-500);
+  --success-foreground: var(--color-slate-50);
+  --warning: var(--color-yellow-500);
+  --warning-foreground: var(--color-slate-50);
+
+  /* Borders - Visible but not harsh */
+  --border: var(--color-slate-300);
+  --input: transparent;
+  --ring: var(--color-slate-300);
+
+  --chart-1: var(--color-blue-500);
+  --chart-2: var(--color-blue-400);
+  --chart-3: var(--color-blue-300);
+  --chart-4: var(--color-blue-200);
+  --chart-5: var(--color-blue-100);
+}
+
+.dark {
+  /* Dark theme - Rich dark with blue tint (like Discord/Steam) */
+  --background: var(--color-slate-800);
+  --foreground: var(--color-slate-200);
+
+  /* Surface - Elevated areas (sidebar, titlebar, cards) */
+  --surface: color-mix(in oklch, var(--color-slate-800) 80%, var(--color-slate-900));
+  --surface-foreground: var(--color-slate-200);
+
+  /* Card */
+  --card: color-mix(in oklch, var(--color-slate-800) 80%, var(--color-slate-900));
+  --card-foreground: var(--color-slate-200);
+
+  /* Popover/Dropdown */
+  --popover: var(--color-slate-800);
+  --popover-foreground: var(--color-slate-200);
+
+  /* Primary - Bright blue */
+  --primary: var(--color-blue-500);
+  --primary-foreground: var(--color-slate-50);
+
+  /* Secondary */
+  --secondary: var(--color-slate-700);
+  --secondary-foreground: var(--color-slate-400);
+
+  /* Muted */
+  --muted: var(--color-slate-700);
+  --muted-foreground: var(--color-slate-400);
+
+  /* Accent - Blue tint for hover states */
+  --accent: var(--color-slate-600);
+  --accent-foreground: var(--color-slate-50);
+
+  /* Semantic colors - Vivid for dark mode */
+  --destructive: var(--color-red-500);
+  --destructive-foreground: var(--color-slate-50);
+  --info: var(--color-blue-500);
+  --info-foreground: var(--color-slate-50);
+  --success: var(--color-green-500);
+  --success-foreground: var(--color-slate-50);
+  --warning: var(--color-yellow-500);
+  --warning-foreground: var(--color-slate-50);
+
+  /* Borders - Subtle blue-gray */
+  --border: color-mix(in oklch, var(--color-slate-700) 40%, var(--color-slate-800));
+  --input: transparent;
+  --ring: var(--color-blue-500);
+
+  --chart-1: var(--color-blue-500);
+  --chart-2: var(--color-slate-400);
+  --chart-3: var(--color-slate-500);
+  --chart-4: var(--color-slate-600);
+  --chart-5: var(--color-slate-700);
+}

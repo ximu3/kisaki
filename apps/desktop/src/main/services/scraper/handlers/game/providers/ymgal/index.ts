@@ -1,0 +1,1 @@
+export { YmgalProvider } from './scraper'

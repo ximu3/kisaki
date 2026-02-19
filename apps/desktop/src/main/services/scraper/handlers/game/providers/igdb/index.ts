@@ -1,0 +1,1 @@
+export { IGDBProvider } from './scraper'

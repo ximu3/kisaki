@@ -1,0 +1,12 @@
+// Components re-exports
+export { default as StatisticsHeader } from './statistics-header.vue'
+export { default as StatisticsStatsSummary } from './statistics-stats-summary.vue'
+export { default as StatisticsActivityHeatmap } from './statistics-activity-heatmap.vue'
+export { default as StatisticsTimeTrend } from './statistics-time-trend.vue'
+export { default as StatisticsTimeDistribution } from './statistics-time-distribution.vue'
+export { default as StatisticsGameDistribution } from './statistics-game-distribution.vue'
+export { default as StatisticsTagDistribution } from './statistics-tag-distribution.vue'
+export { default as StatisticsCollectionDistribution } from './statistics-collection-distribution.vue'
+export { default as StatisticsGameRanking } from './statistics-game-ranking.vue'
+export { default as StatisticsTagRanking } from './statistics-tag-ranking.vue'
+export { default as StatisticsCollectionRanking } from './statistics-collection-ranking.vue'

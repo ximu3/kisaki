@@ -1,0 +1,80 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息",
+    "confirm": "确认",
+    "close": "关闭",
+    "back": "返回",
+    "next": "下一步",
+    "previous": "上一步",
+    "refresh": "刷新",
+    "reset": "重置",
+    "apply": "应用",
+    "select": "选择",
+    "selectAll": "全选",
+    "deselectAll": "取消全选",
+    "noData": "暂无数据",
+    "unknownError": "发生未知错误"
+  },
+  "app": {
+    "name": "Kisaki",
+    "error": {
+      "title": "应用程序错误",
+      "description": "抱歉，应用程序遇到了一个错误。",
+      "message": "错误信息：",
+      "stack": "堆栈跟踪：",
+      "retry": "重试",
+      "reload": "重新加载应用"
+    }
+  },
+  "settings": {
+    "title": "设置",
+    "language": "语言",
+    "theme": "主题",
+    "themeLight": "浅色",
+    "themeDark": "深色",
+    "themeSystem": "跟随系统"
+  },
+  "library": {
+    "title": "游戏库",
+    "addGame": "添加游戏",
+    "allGames": "全部游戏",
+    "favorites": "我喜欢",
+    "recentlyPlayed": "最近游玩",
+    "collections": "合集"
+  },
+  "game": {
+    "play": "开始游戏",
+    "stop": "停止",
+    "edit": "编辑",
+    "delete": "删除",
+    "deleteConfirm": "确定要删除这个游戏吗？",
+    "playTime": "游玩时间",
+    "lastPlayed": "上次游玩",
+    "releaseDate": "发售日期",
+    "developer": "开发商",
+    "publisher": "发行商",
+    "tags": "标签",
+    "characters": "角色",
+    "description": "简介"
+  },
+  "scanner": {
+    "title": "扫描器",
+    "add": "添加扫描器",
+    "scan": "扫描",
+    "scanning": "扫描中...",
+    "path": "路径",
+    "provider": "数据源",
+    "collection": "目标合集"
+  }
+}

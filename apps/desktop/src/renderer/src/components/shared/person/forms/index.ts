@@ -1,0 +1,13 @@
+// Person forms re-exports
+export { default as PersonBasicFormDialog } from './basic-form-dialog.vue'
+export { default as PersonScoreFormDialog } from './score-form-dialog.vue'
+export { default as PersonDescriptionFormDialog } from './description-form-dialog.vue'
+export { PersonDeleteFormDialog, PersonBatchDeleteFormDialog } from './delete-form-dialog'
+export { default as PersonMetadataUpdateFormDialog } from './metadata-update-form-dialog/metadata-update-form-dialog.vue'
+export { default as PersonBatchMetadataUpdateFormDialog } from './metadata-update-form-dialog/batch-metadata-update-form-dialog.vue'
+export { PersonExternalIdsFormDialog } from './external-ids-form-dialog'
+export { PersonMediaFormDialog } from './media-form-dialog'
+export { PersonRelatedSitesFormDialog } from './related-sites-form-dialog'
+export { PersonTagsFormDialog } from './tags-form-dialog'
+export { PersonGamesFormDialog } from './games-form-dialog'
+export { PersonCharactersFormDialog } from './characters-form-dialog'

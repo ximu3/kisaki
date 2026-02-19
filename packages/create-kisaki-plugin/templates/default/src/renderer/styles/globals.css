@@ -1,0 +1,6 @@
+/**
+ * Demo Plugin - Renderer Styles
+ */
+
+@import '@kisaki/plugin-sdk/theme.css';
+@import 'tailwindcss';

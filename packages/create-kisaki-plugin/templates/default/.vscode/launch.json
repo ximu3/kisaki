@@ -1,0 +1,28 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Attach Main",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "preLaunchTask": "Plugin Dev",
+      "timeout": 60000,
+      "sourceMaps": true
+    },
+    {
+      "name": "Attach Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 9222,
+      "timeout": 60000
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Debug All",
+      "configurations": ["Attach Main", "Attach Renderer"],
+      "stopAll": true
+    }
+  ]
+}

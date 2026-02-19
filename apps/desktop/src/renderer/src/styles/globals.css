@@ -1,0 +1,458 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'vue-sonner/style.css';
+@plugin "@tailwindcss/typography";
+@plugin "@iconify/tailwind4";
+@plugin 'tailwind-scrollbar';
+
+@custom-variant dark (&:is(.dark *));
+
+/*
+ * Kisaki Desktop UI Design System
+ * ================================
+ *
+ * Design Philosophy:
+ * - Professional desktop software aesthetic for media management & tooling
+ * - Neutral surfaces with subtle blue accent (primary + focus + selection)
+ * - Information-dense layout with compact controls (14px base typography)
+ * - Clear hierarchy through background layers and spacing, not heavy borders
+ * - Subtle motion, low visual noise (short durations, minimal shadows)
+ *
+ * Key Principles:
+ * 1. Prefer semantic tokens (bg/text/border) over hard-coded colors
+ * 2. Use background layers for hierarchy; keep borders/shadows subtle
+ * 3. Keep sizes consistent and compact (h-7, rounded-md, text-sm)
+ * 4. Reserve primary blue for key actions and focus states
+ * 5. Use gentle micro-interactions only (100–150ms, optional 1.02 hover scale)
+ */
+
+@theme inline {
+  /* Core semantic colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-foreground: var(--surface-foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Border radius sizes */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@font-face {
+  font-family: 'SourceHanSansVf';
+  src: url('@assets/fonts/SourceHanSans-VF.otf.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'SourceHanSansHwVf';
+  src: url('@assets/fonts/SourceHanSansHW-VF.otf.woff2') format('woff2');
+  font-weight: 100 900;
+  font-style: normal;
+}
+
+:root {
+  --font-sans: 'SourceHanSansVf';
+  --font-mono: 'SourceHanSansHwVf';
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  html,
+  body {
+    overflow: hidden;
+    height: 100%;
+  }
+
+  html {
+    font-weight: 450;
+    font-size: 14px;
+    line-height: 1.5;
+    @apply scrollbar-thumb-border scrollbar-track-transparent;
+  }
+
+  /* Focus styles handled by individual components */
+  :focus-visible {
+    @apply outline-none;
+  }
+}
+
+@layer base {
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  button {
+    -webkit-appearance: none;
+    appearance: none;
+  }
+}
+
+@layer utilities {
+  /* Desktop-specific utilities */
+  .desktop-drag {
+    -webkit-app-region: drag;
+  }
+
+  .desktop-no-drag {
+    -webkit-app-region: no-drag;
+  }
+
+  /* Blue-tinted selection */
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
+  }
+
+  /* Surface layers for hierarchy */
+  .surface {
+    @apply bg-surface text-surface-foreground;
+  }
+}
+
+/* Unovis tooltip styles - make wrapper transparent when rendered in body */
+.chart-tooltip-portal {
+  --vis-tooltip-padding: 0px !important;
+  --vis-tooltip-background-color: transparent !important;
+  --vis-tooltip-border-color: transparent !important;
+  --vis-tooltip-text-color: inherit !important;
+  --vis-tooltip-shadow-color: none !important;
+  --vis-tooltip-backdrop-filter: none !important;
+  --vis-tooltip-box-shadow: none !important;
+
+  /* Constrain tooltip within viewport with 10px margin (matches unovis internal padding) */
+  max-width: calc(100vw - 20px) !important;
+  max-height: calc(100vh - 20px) !important;
+}
+
+@utility prose {
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--foreground);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--foreground);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--foreground);
+  --tw-prose-quote-borders: var(--border);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--foreground);
+  --tw-prose-pre-code: var(--background);
+  --tw-prose-pre-bg: var(--foreground);
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+/* @font-face {
+  font-family: 'LXGW WenKai Mono';
+  src: url('@assets/fonts/LXGWWenKaiMono-Medium.ttf') format('truetype');
+  font-weight: 350;
+  font-style: normal;
+} */
+
+@utility prose-xs {
+  font-size: 0.75rem; /* 12px */
+  line-height: 1.6666667; /* 20px line-height */
+
+  /* --- 段落与基础排版 --- */
+  :where(p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  :where([class~='lead']):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 1.1666667em; /* ~14px */
+    line-height: 1.5;
+    margin-top: 0.8em;
+    margin-bottom: 0.8em;
+  }
+
+  :where(blockquote):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1.3333333em;
+    margin-bottom: 1.3333333em;
+    padding-inline-start: 1em;
+  }
+
+  /* --- 标题 (Headings) --- */
+  :where(h1):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 2em; /* 24px */
+    margin-top: 0;
+    margin-bottom: 0.8333333em;
+    line-height: 1.2;
+  }
+
+  :where(h2):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 1.5em; /* 18px */
+    margin-top: 1.6666667em;
+    margin-bottom: 0.8333333em;
+    line-height: 1.4;
+  }
+
+  :where(h3):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 1.25em; /* 15px */
+    margin-top: 1.6em;
+    margin-bottom: 0.6em;
+    line-height: 1.6;
+  }
+
+  :where(h4):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 1em; /* 12px (Bold usually) */
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+    line-height: 1.5;
+  }
+
+  /* --- 媒体 (Images / Video) --- */
+  :where(img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  :where(picture):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  :where(picture > img):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  :where(video):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  /* --- 代码与键盘 (Code / Kbd) --- */
+  :where(kbd):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.8333333em; /* 10px */
+    border-radius: 0.25rem;
+    padding-top: 0.125em;
+    padding-inline-end: 0.3333333em;
+    padding-bottom: 0.125em;
+    padding-inline-start: 0.3333333em;
+  }
+
+  :where(code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.8333333em;
+  }
+
+  :where(h2 code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.9em;
+  }
+
+  :where(h3 code):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.88em;
+  }
+
+  :where(pre):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.8333333em;
+    line-height: 1.6;
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+    border-radius: 0.25rem;
+    padding-top: 0.6666667em;
+    padding-inline-end: 1em;
+    padding-bottom: 0.6666667em;
+    padding-inline-start: 1em;
+  }
+
+  /* --- 列表 (Lists) --- */
+  :where(ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-inline-start: 1.5em;
+  }
+
+  :where(ul):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1em;
+    margin-bottom: 1em;
+    padding-inline-start: 1.5em;
+  }
+
+  :where(li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+  }
+
+  :where(ol > li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-inline-start: 0.375em;
+  }
+
+  :where(ul > li):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-inline-start: 0.375em;
+  }
+
+  /* 嵌套列表的间距微调 */
+  :where(.prose-xs > ul > li p):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  :where(.prose-xs > ul > li > p:first-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    margin-top: 1em;
+  }
+
+  :where(.prose-xs > ul > li > p:last-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    margin-bottom: 1em;
+  }
+
+  :where(.prose-xs > ol > li > p:first-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    margin-top: 1em;
+  }
+
+  :where(.prose-xs > ol > li > p:last-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    margin-bottom: 1em;
+  }
+
+  :where(ul ul, ul ol, ol ul, ol ol):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+  }
+
+  /* --- 描述列表 (DL/DT/DD) --- */
+  :where(dl):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1em;
+    margin-bottom: 1em;
+  }
+
+  :where(dt):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1em;
+  }
+
+  :where(dd):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0.25em;
+    padding-inline-start: 1.5em;
+  }
+
+  /* --- 分割线 (HR) --- */
+  :where(hr):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 2.5em;
+    margin-bottom: 2.5em;
+  }
+
+  :where(hr + *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  :where(h2 + *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  :where(h3 + *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  :where(h4 + *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  /* --- 表格 (Table) --- */
+  :where(table):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.8333333em;
+    line-height: 1.5;
+  }
+
+  :where(thead th):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-inline-end: 1em;
+    padding-bottom: 0.5em;
+    padding-inline-start: 1em;
+  }
+
+  :where(thead th:first-child):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-inline-start: 0;
+  }
+
+  :where(thead th:last-child):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-inline-end: 0;
+  }
+
+  :where(tbody td, tfoot td):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    padding-top: 0.5em;
+    padding-inline-end: 1em;
+    padding-bottom: 0.5em;
+    padding-inline-start: 1em;
+  }
+
+  :where(tbody td:first-child, tfoot td:first-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    padding-inline-start: 0;
+  }
+
+  :where(tbody td:last-child, tfoot td:last-child):not(
+    :where([class~='not-prose'], [class~='not-prose'] *)
+  ) {
+    padding-inline-end: 0;
+  }
+
+  /* --- 图像说明 (Figure / Figcaption) --- */
+  :where(figure):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 1.5em;
+    margin-bottom: 1.5em;
+  }
+
+  :where(figure > *):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  :where(figcaption):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    font-size: 0.8333333em;
+    line-height: 1.4;
+    margin-top: 0.6em;
+  }
+
+  /* --- 边缘修正 --- */
+  :where(.prose-xs > :first-child):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-top: 0;
+  }
+
+  :where(.prose-xs > :last-child):not(:where([class~='not-prose'], [class~='not-prose'] *)) {
+    margin-bottom: 0;
+  }
+}

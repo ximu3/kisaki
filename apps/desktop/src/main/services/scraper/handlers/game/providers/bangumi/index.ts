@@ -1,0 +1,1 @@
+export { BangumiProvider } from './scraper'

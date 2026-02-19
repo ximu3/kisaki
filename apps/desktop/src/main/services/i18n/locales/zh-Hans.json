@@ -1,0 +1,21 @@
+{
+  "common": {
+    "ok": "确定",
+    "cancel": "取消",
+    "save": "保存",
+    "delete": "删除",
+    "edit": "编辑",
+    "add": "添加",
+    "search": "搜索",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功",
+    "warning": "警告",
+    "info": "信息"
+  },
+  "error": {
+    "unknown": "发生未知错误",
+    "network": "网络连接失败",
+    "notFound": "未找到资源"
+  }
+}

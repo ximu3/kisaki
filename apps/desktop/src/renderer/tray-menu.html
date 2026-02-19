@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: attachment: https: http:"
+    />
+    <style>
+      html,
+      body,
+      #root {
+        background: var(--color-popover);
+      }
+      body {
+        margin: 0;
+      }
+    </style>
+    <title>Kisaki Tray Menu</title>
+  </head>
+
+  <body>
+    <div id="root"></div>
+    <script
+      type="module"
+      src="/src/tray-menu.ts"
+    ></script>
+  </body>
+</html>

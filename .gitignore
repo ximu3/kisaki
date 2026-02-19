@@ -1,0 +1,16 @@
+node_modules
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+dev
+.temp
+.tmp-shadcn-vue
+.env
+.env.*
+!.env.example
+.codex
+.claude
+CLAUDE.md
+AGENTS.md

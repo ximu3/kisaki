@@ -1,0 +1,285 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '10'
+
+jobs:
+  # =============================================================================
+  # Detect: Parse commit message for release intent
+  # =============================================================================
+  detect:
+    name: Detect Release
+    runs-on: ubuntu-latest
+    outputs:
+      should_release: ${{ steps.parse.outputs.should_release }}
+      target: ${{ steps.parse.outputs.target }}
+      version: ${{ steps.parse.outputs.version }}
+      changelog: ${{ steps.parse.outputs.changelog }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Parse commit message
+        id: parse
+        run: |
+          # Get commit message
+          COMMIT_MSG=$(git log -1 --pretty=%B)
+          FIRST_LINE=$(echo "$COMMIT_MSG" | head -n 1)
+
+          # Check for release pattern: release(target): vX.Y.Z
+          # Targets: desktop, plugin-sdk, plugin-cli, create-kisaki-plugin
+          if [[ "$FIRST_LINE" =~ ^release\((desktop|plugin-sdk|plugin-cli|create-kisaki-plugin)\):\ v([0-9]+\.[0-9]+\.[0-9]+)$ ]]; then
+            TARGET="${BASH_REMATCH[1]}"
+            VERSION="${BASH_REMATCH[2]}"
+
+            # Extract changelog (everything after first line, trimmed)
+            CHANGELOG=$(echo "$COMMIT_MSG" | tail -n +2 | sed '/^$/d')
+
+            echo "should_release=true" >> $GITHUB_OUTPUT
+            echo "target=$TARGET" >> $GITHUB_OUTPUT
+            echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+            # Handle multiline changelog
+            {
+              echo "changelog<<EOF"
+              echo "$CHANGELOG"
+              echo "EOF"
+            } >> $GITHUB_OUTPUT
+
+            echo "🚀 Detected release: $TARGET v$VERSION"
+          else
+            echo "should_release=false" >> $GITHUB_OUTPUT
+            echo "ℹ️ No release commit detected"
+          fi
+
+  # =============================================================================
+  # Release Desktop: Build and publish Electron application
+  # =============================================================================
+  release-desktop:
+    name: Release Desktop
+    needs: detect
+    if: needs.detect.outputs.should_release == 'true' && needs.detect.outputs.target == 'desktop'
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build application
+        run: pnpm build:win
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-windows
+          path: |
+            apps/desktop/dist/*.exe
+            apps/desktop/dist/latest.yml
+          if-no-files-found: ignore
+
+  # =============================================================================
+  # Publish Desktop: Create GitHub Release after all builds complete
+  # =============================================================================
+  publish-desktop:
+    name: Publish Desktop Release
+    needs: [detect, release-desktop]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          pattern: release-*
+          merge-multiple: true
+
+      - name: Create Git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "desktop-v${{ needs.detect.outputs.version }}"
+          git push origin "desktop-v${{ needs.detect.outputs.version }}"
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: desktop-v${{ needs.detect.outputs.version }}
+          name: Kisaki v${{ needs.detect.outputs.version }}
+          body: ${{ needs.detect.outputs.changelog }}
+          files: artifacts/*
+          draft: false
+          prerelease: false
+
+  # =============================================================================
+  # Release SDK: Publish @kisaki/plugin-sdk to npm
+  # =============================================================================
+  release-plugin-sdk:
+    name: Release Plugin SDK
+    needs: detect
+    if: needs.detect.outputs.should_release == 'true' && needs.detect.outputs.target == 'plugin-sdk'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build plugin toolkit
+        run: pnpm build:plugin-toolkit
+
+      - name: Verify version matches
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/plugin-sdk/package.json').version")
+          if [ "$PKG_VERSION" != "${{ needs.detect.outputs.version }}" ]; then
+            echo "❌ Version mismatch: package.json has $PKG_VERSION, commit says ${{ needs.detect.outputs.version }}"
+            exit 1
+          fi
+          echo "✅ Version verified: $PKG_VERSION"
+
+      - name: Publish to npm
+        run: pnpm publish --access public --no-git-checks
+        working-directory: packages/plugin-sdk
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "plugin-sdk-v${{ needs.detect.outputs.version }}"
+          git push origin "plugin-sdk-v${{ needs.detect.outputs.version }}"
+
+  # =============================================================================
+  # Release CLI: Publish @kisaki/plugin-cli to npm
+  # =============================================================================
+  release-plugin-cli:
+    name: Release Plugin CLI
+    needs: detect
+    if: needs.detect.outputs.should_release == 'true' && needs.detect.outputs.target == 'plugin-cli'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build CLI
+        run: pnpm --filter @kisaki/plugin-cli build
+
+      - name: Verify version matches
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/plugin-cli/package.json').version")
+          if [ "$PKG_VERSION" != "${{ needs.detect.outputs.version }}" ]; then
+            echo "❌ Version mismatch: package.json has $PKG_VERSION, commit says ${{ needs.detect.outputs.version }}"
+            exit 1
+          fi
+          echo "✅ Version verified: $PKG_VERSION"
+
+      - name: Publish to npm
+        run: pnpm publish --access public --no-git-checks
+        working-directory: packages/plugin-cli
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "plugin-cli-v${{ needs.detect.outputs.version }}"
+          git push origin "plugin-cli-v${{ needs.detect.outputs.version }}"
+
+  # =============================================================================
+  # Release Create: Publish create-kisaki-plugin to npm
+  # =============================================================================
+  release-create-kisaki-plugin:
+    name: Release Create Kisaki Plugin
+    needs: detect
+    if: needs.detect.outputs.should_release == 'true' && needs.detect.outputs.target == 'create-kisaki-plugin'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build create-kisaki-plugin
+        run: pnpm --filter create-kisaki-plugin build
+
+      - name: Verify version matches
+        run: |
+          PKG_VERSION=$(node -p "require('./packages/create-kisaki-plugin/package.json').version")
+          if [ "$PKG_VERSION" != "${{ needs.detect.outputs.version }}" ]; then
+            echo "❌ Version mismatch: package.json has $PKG_VERSION, commit says ${{ needs.detect.outputs.version }}"
+            exit 1
+          fi
+          echo "✅ Version verified: $PKG_VERSION"
+
+      - name: Publish to npm
+        run: pnpm publish --access public --no-git-checks
+        working-directory: packages/create-kisaki-plugin
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Create Git tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag "create-kisaki-plugin-v${{ needs.detect.outputs.version }}"
+          git push origin "create-kisaki-plugin-v${{ needs.detect.outputs.version }}"

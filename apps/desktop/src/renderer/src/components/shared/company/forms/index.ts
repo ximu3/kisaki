@@ -1,0 +1,12 @@
+// Company forms re-exports
+export { default as CompanyBasicFormDialog } from './basic-form-dialog.vue'
+export { default as CompanyScoreFormDialog } from './score-form-dialog.vue'
+export { default as CompanyDescriptionFormDialog } from './description-form-dialog.vue'
+export { CompanyDeleteFormDialog, CompanyBatchDeleteFormDialog } from './delete-form-dialog'
+export { default as CompanyMetadataUpdateFormDialog } from './metadata-update-form-dialog/metadata-update-form-dialog.vue'
+export { default as CompanyBatchMetadataUpdateFormDialog } from './metadata-update-form-dialog/batch-metadata-update-form-dialog.vue'
+export { CompanyExternalIdsFormDialog } from './external-ids-form-dialog'
+export { CompanyMediaFormDialog } from './media-form-dialog'
+export { CompanyRelatedSitesFormDialog } from './related-sites-form-dialog'
+export { CompanyTagsFormDialog } from './tags-form-dialog'
+export { CompanyGamesFormDialog } from './games-form-dialog'

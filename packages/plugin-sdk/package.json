@@ -1,0 +1,137 @@
+{
+  "name": "@kisaki/plugin-sdk",
+  "version": "0.0.1",
+  "description": "SDK for developing Kisaki plugins with full type safety",
+  "kisakiCompat": ">=0.0.1",
+  "type": "module",
+  "exports": {
+    "./main": {
+      "import": {
+        "types": "./dist/main/index.d.mts",
+        "default": "./dist/main/index.mjs"
+      }
+    },
+    "./main/tables": {
+      "import": {
+        "types": "./dist/main/tables.d.mts",
+        "default": "./dist/main/tables.mjs"
+      }
+    },
+    "./main/electron": {
+      "import": {
+        "types": "./dist/main/electron.d.mts",
+        "default": "./dist/main/electron.mjs"
+      }
+    },
+    "./main/drizzle": {
+      "import": {
+        "types": "./dist/main/drizzle.d.mts",
+        "default": "./dist/main/drizzle.mjs"
+      }
+    },
+    "./renderer": {
+      "import": {
+        "types": "./dist/renderer/index.d.mts",
+        "default": "./dist/renderer/index.mjs"
+      }
+    },
+    "./renderer/tables": {
+      "import": {
+        "types": "./dist/renderer/tables.d.mts",
+        "default": "./dist/renderer/tables.mjs"
+      }
+    },
+    "./renderer/ui": {
+      "import": {
+        "types": "./dist/renderer/ui.d.mts",
+        "default": "./dist/renderer/ui.mjs"
+      }
+    },
+    "./renderer/composables": {
+      "import": {
+        "types": "./dist/renderer/composables.d.mts",
+        "default": "./dist/renderer/composables.mjs"
+      }
+    },
+    "./renderer/stores": {
+      "import": {
+        "types": "./dist/renderer/stores.d.mts",
+        "default": "./dist/renderer/stores.mjs"
+      }
+    },
+    "./renderer/vue": {
+      "import": {
+        "types": "./dist/renderer/vue.d.mts",
+        "default": "./dist/renderer/vue.mjs"
+      }
+    },
+    "./renderer/vue-router": {
+      "import": {
+        "types": "./dist/renderer/vue-router.d.mts",
+        "default": "./dist/renderer/vue-router.mjs"
+      }
+    },
+    "./renderer/pinia": {
+      "import": {
+        "types": "./dist/renderer/pinia.d.mts",
+        "default": "./dist/renderer/pinia.mjs"
+      }
+    },
+    "./renderer/drizzle": {
+      "import": {
+        "types": "./dist/renderer/drizzle.d.mts",
+        "default": "./dist/renderer/drizzle.mjs"
+      }
+    },
+    "./theme.css": "./dist/theme.css"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsx scripts/build.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint --cache .",
+    "lint:fix": "eslint --cache --fix .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "@tanstack/vue-virtual": "^3.13.18",
+    "better-sqlite3": "^12.4.1",
+    "class-variance-authority": "^0.7.1",
+    "drizzle-orm": "^0.45.1",
+    "electron": "^39.2.6",
+    "electron-log": "^5.4.3",
+    "i18next": "^25.7.1",
+    "pinia": "^3.0.4",
+    "reka-ui": "^2.7.0",
+    "tailwindcss": "^4.1.17",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^22.19.1",
+    "better-sqlite3": "^12.4.1",
+    "drizzle-orm": "^0.45.1",
+    "electron": "^39.2.6",
+    "electron-log": "^5.4.3",
+    "pinia": "^3.0.4",
+    "reka-ui": "^2.7.0",
+    "i18next": "^25.7.1",
+    "tsx": "^4.20.6",
+    "typescript": "^5.9.3",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4"
+  },
+  "keywords": [
+    "kisaki",
+    "plugin",
+    "sdk",
+    "electron",
+    "vue"
+  ],
+  "license": "MIT"
+}

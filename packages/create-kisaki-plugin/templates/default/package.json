@@ -1,0 +1,39 @@
+{
+  "name": "kisaki-plugin-template",
+  "version": "0.0.1",
+  "description": "A Kisaki plugin.",
+  "author": "example.com",
+  "type": "module",
+  "scripts": {
+    "dev": "kisaki-plugin dev --debug --debug-wait",
+    "build": "kisaki-plugin build",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.web.json && tsc --noEmit -p tsconfig.node.json",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "validate": "kisaki-plugin validate",
+    "package": "kisaki-plugin validate && kisaki-plugin pack"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@kisaki/plugin-cli": "^0.0.1",
+    "@kisaki/plugin-sdk": "^0.0.1",
+    "@tanstack/vue-virtual": "^3.13.18",
+    "@vitejs/plugin-vue": "^6.0.3",
+    "better-sqlite3": "^12.4.1",
+    "class-variance-authority": "^0.7.1",
+    "drizzle-orm": "^0.45.1",
+    "electron": "^39.2.6",
+    "electron-log": "^5.4.3",
+    "i18next": "^25.7.1",
+    "pinia": "^3.0.4",
+    "reka-ui": "^2.7.0",
+    "tailwindcss": "^4.1.17",
+    "typescript": "^5.9.3",
+    "vite": "^7.2.6",
+    "vue": "^3.5.26",
+    "vue-router": "^4.6.4",
+    "vue-tsc": "^3.2.2"
+  }
+}

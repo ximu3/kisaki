@@ -1,0 +1,80 @@
+{
+  "common": {
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "save": "保存",
+    "delete": "削除",
+    "edit": "編集",
+    "add": "追加",
+    "search": "検索",
+    "loading": "読み込み中...",
+    "error": "エラー",
+    "success": "成功",
+    "warning": "警告",
+    "info": "情報",
+    "confirm": "確認",
+    "close": "閉じる",
+    "back": "戻る",
+    "next": "次へ",
+    "previous": "前へ",
+    "refresh": "更新",
+    "reset": "リセット",
+    "apply": "適用",
+    "select": "選択",
+    "selectAll": "すべて選択",
+    "deselectAll": "選択解除",
+    "noData": "データがありません",
+    "unknownError": "不明なエラーが発生しました"
+  },
+  "app": {
+    "name": "Kisaki",
+    "error": {
+      "title": "アプリケーションエラー",
+      "description": "申し訳ございません。アプリケーションでエラーが発生しました。",
+      "message": "エラーメッセージ：",
+      "stack": "スタックトレース：",
+      "retry": "再試行",
+      "reload": "アプリを再読み込み"
+    }
+  },
+  "settings": {
+    "title": "設定",
+    "language": "言語",
+    "theme": "テーマ",
+    "themeLight": "ライト",
+    "themeDark": "ダーク",
+    "themeSystem": "システム"
+  },
+  "library": {
+    "title": "ライブラリ",
+    "addGame": "ゲームを追加",
+    "allGames": "すべてのゲーム",
+    "favorites": "お気に入り",
+    "recentlyPlayed": "最近プレイした",
+    "collections": "コレクション"
+  },
+  "game": {
+    "play": "プレイ",
+    "stop": "停止",
+    "edit": "編集",
+    "delete": "削除",
+    "deleteConfirm": "このゲームを削除してもよろしいですか？",
+    "playTime": "プレイ時間",
+    "lastPlayed": "最終プレイ",
+    "releaseDate": "発売日",
+    "developer": "開発元",
+    "publisher": "発売元",
+    "tags": "タグ",
+    "characters": "キャラクター",
+    "description": "概要"
+  },
+  "scanner": {
+    "title": "スキャナー",
+    "add": "スキャナーを追加",
+    "scan": "スキャン",
+    "scanning": "スキャン中...",
+    "path": "パス",
+    "provider": "プロバイダー",
+    "collection": "対象コレクション"
+  }
+}

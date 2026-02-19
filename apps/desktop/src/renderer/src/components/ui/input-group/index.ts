@@ -1,0 +1,6 @@
+export { default as InputGroup } from './input-group.vue'
+export { default as InputGroupAddon } from './input-group-addon.vue'
+export { default as InputGroupButton } from './input-group-button.vue'
+export { default as InputGroupText } from './input-group-text.vue'
+export { default as InputGroupInput } from './input-group-input.vue'
+export { default as InputGroupTextarea } from './input-group-textarea.vue'

@@ -1,0 +1,43 @@
+{
+  "name": "kisaki-monorepo",
+  "private": true,
+  "description": "Kisaki Multimedia Library Manager - Monorepo",
+  "scripts": {
+    "dev": "pnpm --filter kisaki dev",
+    "build": "pnpm --filter kisaki build",
+    "build:win": "pnpm --filter kisaki build:win",
+    "build:mac": "pnpm --filter kisaki build:mac",
+    "build:linux": "pnpm --filter kisaki build:linux",
+    "build:plugin-types": "pnpm --filter kisaki build:plugin-types",
+    "build:plugin-tooling": "pnpm build:plugin-types && pnpm --filter @kisaki/plugin-sdk build && pnpm --filter @kisaki/plugin-cli build && pnpm --filter create-kisaki-plugin build",
+    "typecheck": "pnpm -r --parallel typecheck",
+    "lint": "pnpm -r --parallel lint",
+    "lint:fix": "pnpm -r --parallel lint:fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "clean": "pnpm -r --parallel clean",
+    "prepare": "lefthook install"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "jiti": "^2.6.1",
+    "lefthook": "^2.0.12",
+    "prettier": "^3.7.4",
+    "tsdown": "^0.19.0",
+    "typescript-eslint": "^8.49.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "electron",
+      "electron-winstaller",
+      "esbuild",
+      "lefthook",
+      "sharp",
+      "vue-demi",
+      "maplibre-gl"
+    ]
+  }
+}
