@@ -1,6 +1,6 @@
 # Kisaki
 
-[English](README.md) | [简体中文](README.zh-CN.md)
+[English](README.md) | [简体中文](README.zh-Hans.md)
 
 Kisaki is a multifunctional media management project designed to provide a unified user interface and database model to record, manage, build, sync, and showcase your media collection and memories.
 
