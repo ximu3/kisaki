@@ -65,12 +65,12 @@ jobs:
 
       - name: Verify plugin tooling outputs
         run: |
-          test -f packages/plugin-sdk/dist/main.mjs
-          test -f packages/plugin-sdk/dist/renderer.mjs
-          test -f packages/plugin-sdk/dist/main.d.mts
-          test -f packages/plugin-sdk/dist/renderer.d.mts
-          test -f packages/plugin-cli/dist/index.js
-          test -f packages/create-kisaki-plugin/dist/index.js
+          test -f packages/plugin-sdk/dist/main/index.mjs
+          test -f packages/plugin-sdk/dist/renderer/index.mjs
+          test -f packages/plugin-sdk/dist/main/index.d.mts
+          test -f packages/plugin-sdk/dist/renderer/index.d.mts
+          test -f packages/plugin-cli/dist/index.mjs
+          test -f packages/create-kisaki-plugin/dist/index.mjs
           echo "✅ All plugin tooling outputs verified"
 
   # =============================================================================
