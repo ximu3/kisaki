@@ -7,6 +7,7 @@ import { ref } from 'vue'
 import { Icon } from '@renderer/components/ui/icon'
 import { ipcManager } from '@renderer/core/ipc'
 import { useIpc } from '@renderer/composables/use-ipc'
+import kisakiIcon from '@assets/icon.png'
 
 const isMaximized = ref(false)
 
@@ -41,7 +42,11 @@ async function handleCloseMainWindow() {
       class="flex items-center gap-2 px-3 h-full"
       style="-webkit-app-region: no-drag"
     >
-      <span class="text-sm font-semibold text-surface-foreground">Kisaki</span>
+      <img
+        :src="kisakiIcon"
+        alt="Kisaki Icon"
+        class="w-[18px] h-[18px] border border-border rounded-md"
+      />
     </div>
 
     <!-- Spacer - draggable area -->
