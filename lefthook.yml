@@ -1,0 +1,63 @@
+# Lefthook - Git hooks manager
+# https://github.com/evilmartians/lefthook
+
+pre-commit:
+  parallel: true
+  commands:
+    # ===== Apps: Desktop =====
+    lint-desktop:
+      root: 'apps/desktop/'
+      glob: 'apps/desktop/**/*.{ts,tsx,mts,js,mjs,cjs}'
+      run: pnpm eslint --fix --cache {staged_files}
+      stage_fixed: true
+
+    format-desktop:
+      root: 'apps/desktop/'
+      glob: 'apps/desktop/**/*.{ts,tsx,mts,js,mjs,cjs,json,css}'
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
+
+    # ===== Packages: Plugin SDK =====
+    lint-plugin-sdk:
+      root: 'packages/plugin-sdk/'
+      glob: 'packages/plugin-sdk/**/*.{ts,tsx,mts,js,mjs,cjs}'
+      run: pnpm eslint --fix --cache {staged_files}
+      stage_fixed: true
+
+    format-plugin-sdk:
+      root: 'packages/plugin-sdk/'
+      glob: 'packages/plugin-sdk/**/*.{ts,tsx,mts,js,mjs,cjs,json,css}'
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
+
+    # ===== Packages: Plugin CLI =====
+    lint-plugin-cli:
+      root: 'packages/plugin-cli/'
+      glob: 'packages/plugin-cli/**/*.{ts,tsx,mts,js,mjs,cjs}'
+      run: pnpm eslint --fix --cache {staged_files}
+      stage_fixed: true
+
+    format-plugin-cli:
+      root: 'packages/plugin-cli/'
+      glob: 'packages/plugin-cli/**/*.{ts,tsx,mts,js,mjs,cjs,json}'
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
+
+    # ===== Packages: Create Plugin =====
+    lint-create-plugin:
+      root: 'packages/create-kisaki-plugin/'
+      glob: 'packages/create-kisaki-plugin/**/*.{ts,tsx,mts,js,mjs,cjs}'
+      run: pnpm eslint --fix --cache {staged_files}
+      stage_fixed: true
+
+    format-create-plugin:
+      root: 'packages/create-kisaki-plugin/'
+      glob: 'packages/create-kisaki-plugin/**/*.{ts,tsx,mts,js,mjs,cjs,json}'
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
+
+    # ===== Common / Root =====
+    format-root:
+      glob: '*.{json,yaml,yml,md}'
+      run: pnpm prettier --write {staged_files}
+      stage_fixed: true
