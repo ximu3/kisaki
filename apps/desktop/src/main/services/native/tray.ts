@@ -10,8 +10,8 @@ function clamp(value: number, min: number, max: number): number {
 
 function getTrayIconPath(): string {
   return app.isPackaged
-    ? join(process.resourcesPath, 'app.asar.unpacked', 'resources', 'icon.png')
-    : join(app.getAppPath(), 'resources', 'icon.png')
+    ? join(process.resourcesPath, 'app.asar.unpacked', 'resources', 'icon.ico')
+    : join(app.getAppPath(), 'resources', 'icon.ico')
 }
 
 export class NativeTray {
