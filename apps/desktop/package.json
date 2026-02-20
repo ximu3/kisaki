@@ -1,15 +1,10 @@
 {
   "name": "kisaki",
   "version": "0.0.1",
-  "description": "A multifunctional media management project.",
+  "description": "A multifunctional media management project",
   "main": "./out/main/index.js",
-  "author": "example.com",
+  "author": "ximu",
   "homepage": "https://electron-vite.org",
-  "exports": {
-    "./plugin": {
-      "types": "./dist/plugin.d.ts"
-    }
-  },
   "scripts": {
     "dev": "electron-vite dev",
     "start": "electron-vite preview",
