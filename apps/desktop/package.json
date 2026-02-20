@@ -4,7 +4,7 @@
   "description": "A multifunctional media management project",
   "main": "./out/main/index.js",
   "author": "ximu",
-  "homepage": "https://electron-vite.org",
+  "homepage": "https://github.com/ximu3/kisaki",
   "scripts": {
     "dev": "electron-vite dev",
     "start": "electron-vite preview",
