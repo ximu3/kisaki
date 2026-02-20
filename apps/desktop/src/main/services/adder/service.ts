@@ -83,14 +83,3 @@ export class AdderService implements IContentService {
     return ['game', 'character', 'person', 'company']
   }
 }
-
-export type {
-  AddCharacterOptions,
-  AddCharacterResult,
-  AddCompanyOptions,
-  AddCompanyResult,
-  AddGameOptions,
-  AddGameResult,
-  AddPersonOptions,
-  AddPersonResult
-} from '@shared/adder'
