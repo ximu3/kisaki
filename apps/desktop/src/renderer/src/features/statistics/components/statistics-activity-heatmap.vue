@@ -6,10 +6,14 @@
 -->
 
 <script setup lang="ts">
-import { computed } from 'vue'
-import { Heatmap, type HeatmapGranularity } from '@renderer/components/ui/heatmap'
-import { useStatistics } from '../composables'
+import {
+  Heatmap,
+  type HeatmapGranularity,
+  type HeatmapLayoutByGranularity
+} from '@renderer/components/ui/heatmap'
 import type { GameSession } from '@shared/db'
+import { computed } from 'vue'
+import { useStatistics } from '../composables'
 
 interface Props {
   /** Override sessions (for custom data source) */
@@ -28,6 +32,13 @@ const context = useStatistics()
 
 const effectiveSessions = computed(() => props.sessions ?? context.sessions.value)
 const effectiveDateRange = computed(() => props.dateRange ?? context.dateRange.value)
+const layoutByGranularity = computed<HeatmapLayoutByGranularity | undefined>(() => {
+  const reportType = context.reportType.value
+  if (reportType === 'overview' || reportType === 'yearly') {
+    return { day: 'weekColumns' }
+  }
+  return undefined
+})
 
 const heatmapData = computed(() => {
   return effectiveSessions.value.map((s) => ({
@@ -42,6 +53,7 @@ const heatmapData = computed(() => {
     :range="effectiveDateRange"
     :data="heatmapData"
     :available-granularities="props.availableGranularities"
+    :layout-by-granularity="layoutByGranularity"
     :legend-labels="{ less: '少', more: '多' }"
   />
 </template>

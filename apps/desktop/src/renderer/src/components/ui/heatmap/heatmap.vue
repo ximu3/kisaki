@@ -2,25 +2,28 @@
   Heatmap - Responsive activity heatmap
 
   Features:
-  - Fixed-height chart area (width auto)
-  - Best-fit grid packing to maximize cell size
+  - Multiple layout modes per granularity
+    - packed: Best-fit grid packing to maximize cell size in fixed-height chart area
+    - weekColumns: Vertically arranged columns to preserve weekday semantics; grid size adapts to the container width
   - Granularity selection (day/week/month)
   - Tooltip support (shadcn-vue chart tooltip)
 -->
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
-import { cn, toLocalDateKey, toLocalWeekKey, toLocalMonthKey } from '@renderer/utils'
-import { SingleContainer, Tooltip } from '@unovis/ts'
-import { SegmentedControl, SegmentedControlItem } from '@renderer/components/ui/segmented-control'
 import {
   ChartContainer,
   ChartTooltipContent,
   componentToString,
   type ChartConfig
 } from '@renderer/components/ui/chart'
+import { SegmentedControl, SegmentedControlItem } from '@renderer/components/ui/segmented-control'
+import { cn, toLocalDateKey, toLocalMonthKey, toLocalWeekKey } from '@renderer/utils'
+import { SingleContainer, Tooltip } from '@unovis/ts'
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
 import { HeatmapRectGrid, HeatmapRectGridSelectors } from './heatmap-grid'
-import type { HeatmapGranularity, HeatmapProps } from './types'
+import { clampNonNegativeInt, getRootFontSizePx } from './heatmap-utils'
+import { HeatmapWeekColumnGrid, HeatmapWeekColumnGridSelectors } from './heatmap-week-column-grid'
+import type { HeatmapGranularity, HeatmapLayoutMode, HeatmapProps } from './types'
 
 // =============================================================================
 // Props & Model
@@ -28,6 +31,7 @@ import type { HeatmapGranularity, HeatmapProps } from './types'
 
 const props = withDefaults(defineProps<HeatmapProps>(), {
   height: 100,
+  showInlineDetails: true,
   showLegend: true,
   legendLabels: () => ({ less: 'Less', more: 'More' }),
   granularityLabels: () => ({ day: '日', week: '周', month: '月' }),
@@ -64,10 +68,11 @@ const chartConfig = {
 } satisfies ChartConfig
 
 const tooltipTemplate = componentToString(chartConfig, ChartTooltipContent, { labelKey: 'label' })
-
-// =============================================================================
-// Helpers
-// =============================================================================
+const DEFAULT_INLINE_DETAILS_MIN_CELL_SIZE_PX = 64
+const INLINE_DETAILS_HEIGHT_RATIO = 0.68
+const GRID_GAP_REM = 0.25
+const GRID_CORNER_RADIUS_REM = 0.125
+const WEEK_COLUMN_ROW_COUNT = 7
 
 function getIntensityLevel(value: number): number {
   if (value === 0) return 0
@@ -109,12 +114,56 @@ function formatDateDisplay(date: Date): string {
 
 function formatValueDisplay(value: number): string {
   if (props.formatValue) return props.formatValue(value)
-  if (value === 0) return '无活动'
+  if (!Number.isFinite(value) || value <= 0) return '无活动'
+
   const hours = Math.floor(value / 3600000)
   const minutes = Math.floor((value % 3600000) / 60000)
   if (hours > 0) return `${hours}小时${minutes}分钟`
   return `${minutes}分钟`
 }
+
+// Keep inline-label formatting close to the display-only fields that consume it.
+function formatCompactValueDisplay(value: number): string {
+  if (!Number.isFinite(value) || value <= 0) return '无活动'
+
+  if (value < 3600000) {
+    return `${Math.floor(value / 60000)}分钟`
+  }
+
+  const hours = value / 3600000
+  const compactHours = Number.isInteger(hours)
+    ? String(hours)
+    : (hours >= 10 ? hours.toFixed(0) : hours.toFixed(1)).replace(/\.0$/, '')
+
+  return `${compactHours}小时`
+}
+
+function formatMonthDayDisplay(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0')
+  const day = String(date.getDate()).padStart(2, '0')
+  return `${month}-${day}`
+}
+
+function formatInlineDateDisplay(date: Date): string {
+  switch (granularity.value) {
+    case 'week': {
+      const weekEnd = new Date(date)
+      weekEnd.setDate(weekEnd.getDate() + 6)
+      return `${formatMonthDayDisplay(date)}~${formatMonthDayDisplay(weekEnd)}`
+    }
+    case 'month':
+      return `${date.getMonth() + 1}月`
+    default:
+      return formatMonthDayDisplay(date)
+  }
+}
+
+const layoutMode = computed<HeatmapLayoutMode>(() => {
+  const requested = props.layoutByGranularity?.[granularity.value]
+  return requested === 'weekColumns' && granularity.value === 'day' ? 'weekColumns' : 'packed'
+})
+
+const usesWeekColumns = computed(() => layoutMode.value === 'weekColumns')
 
 // =============================================================================
 // Data Transformation (range-driven cells)
@@ -215,14 +264,38 @@ interface HeatmapChartDatum extends HeatmapCell {
   label: string
   valueText: string
   fill: string
+  inlineLabelLines: string[]
+  labelFill: string
 }
+
+function getInlineLabelFill(level: number): string {
+  if (level === 0) return 'var(--color-muted-foreground)'
+  return level >= 3 ? 'var(--color-primary-foreground)' : 'var(--color-foreground)'
+}
+
+function getInlineLabelLines(cell: HeatmapCell): string[] {
+  const lines = [formatInlineDateDisplay(cell.date)]
+  if (cell.value > 0) lines.push(formatCompactValueDisplay(cell.value))
+  return lines
+}
+
+const inlineDetailsMinCellSizePx = computed(() => {
+  if (props.inlineDetailsMinCellSizePx != null) return props.inlineDetailsMinCellSizePx
+  // Keep inline details limited to the visually largest layouts, typically single-row heatmaps.
+  return Math.max(
+    DEFAULT_INLINE_DETAILS_MIN_CELL_SIZE_PX,
+    Math.floor(props.height * INLINE_DETAILS_HEIGHT_RATIO)
+  )
+})
 
 const chartData = computed<HeatmapChartDatum[]>(() =>
   cells.value.map((cell) => ({
     ...cell,
     label: formatDateDisplay(cell.date),
     valueText: formatValueDisplay(cell.value),
-    fill: getCellFill(cell.level)
+    fill: getCellFill(cell.level),
+    inlineLabelLines: getInlineLabelLines(cell),
+    labelFill: getInlineLabelFill(cell.level)
   }))
 )
 
@@ -232,15 +305,63 @@ const insight = computed(() => {
   return `总时长：${formatValueDisplay(total)}`
 })
 
+const weekColumnLeadingOffset = computed(() => {
+  if (!usesWeekColumns.value || !range.value) return 0
+  const start = new Date(range.value.start)
+  start.setHours(0, 0, 0, 0)
+  return (start.getDay() + 6) % 7
+})
+
+const chartHostEl = ref<HTMLDivElement | null>(null)
+const chartWidthPx = ref(0)
+
+const gridGapPx = computed(() => clampNonNegativeInt(GRID_GAP_REM * getRootFontSizePx()))
+
+const weekColumnCellSizePx = computed(() => {
+  if (!usesWeekColumns.value) return 0
+  const width = chartWidthPx.value
+  if (width <= 0 || chartData.value.length === 0) return 0
+  const columns = Math.max(
+    1,
+    Math.ceil((weekColumnLeadingOffset.value + chartData.value.length) / WEEK_COLUMN_ROW_COUNT)
+  )
+  return Math.max(0, (width - Math.max(0, columns - 1) * gridGapPx.value) / columns)
+})
+
+const chartHeightPx = computed(() => {
+  if (!usesWeekColumns.value) return props.height
+  if (weekColumnCellSizePx.value <= 0) return props.height
+  return (
+    WEEK_COLUMN_ROW_COUNT * weekColumnCellSizePx.value +
+    Math.max(0, WEEK_COLUMN_ROW_COUNT - 1) * gridGapPx.value
+  )
+})
+
 // =============================================================================
 // Unovis
 // =============================================================================
 
 const containerEl = ref<HTMLDivElement | null>(null)
+let chartHostResizeObserver: ResizeObserver | null = null
 
 let unovisContainer: SingleContainer<HeatmapChartDatum[]> | null = null
 let unovisTooltip: Tooltip | null = null
-let gridComponent: HeatmapRectGrid<HeatmapChartDatum> | null = null
+let gridComponent:
+  | HeatmapRectGrid<HeatmapChartDatum>
+  | HeatmapWeekColumnGrid<HeatmapChartDatum>
+  | null = null
+
+function updateChartWidth() {
+  chartWidthPx.value = chartHostEl.value?.clientWidth ?? 0
+}
+
+function startChartHostObserver() {
+  updateChartWidth()
+  if (typeof ResizeObserver === 'undefined' || !chartHostEl.value) return
+  chartHostResizeObserver?.disconnect()
+  chartHostResizeObserver = new ResizeObserver(() => updateChartWidth())
+  chartHostResizeObserver.observe(chartHostEl.value)
+}
 
 function destroyUnovis() {
   unovisContainer?.destroy()
@@ -255,21 +376,44 @@ function initUnovis() {
   destroyUnovis()
 
   if (!containerEl.value) return
+  if (usesWeekColumns.value && chartWidthPx.value <= 0) return
 
-  gridComponent = new HeatmapRectGrid<HeatmapChartDatum>({
-    id: (d: HeatmapChartDatum) => d.dateKey,
-    fill: (d: HeatmapChartDatum) => d.fill,
-    cursor: 'default',
-    gapRem: 0.25,
-    cornerRadiusRem: 0.125,
-    shapeRendering: 'auto'
-  })
+  const triggerSelector = usesWeekColumns.value
+    ? HeatmapWeekColumnGridSelectors.cell
+    : HeatmapRectGridSelectors.cell
+
+  if (usesWeekColumns.value) {
+    if (weekColumnCellSizePx.value <= 0) return
+
+    gridComponent = new HeatmapWeekColumnGrid<HeatmapChartDatum>({
+      id: (d: HeatmapChartDatum) => d.dateKey,
+      fill: (d: HeatmapChartDatum) => d.fill,
+      cursor: 'default',
+      leadingOffset: weekColumnLeadingOffset.value,
+      cellSizePx: weekColumnCellSizePx.value,
+      gapRem: GRID_GAP_REM,
+      cornerRadiusRem: GRID_CORNER_RADIUS_REM,
+      shapeRendering: 'auto'
+    })
+  } else {
+    gridComponent = new HeatmapRectGrid<HeatmapChartDatum>({
+      id: (d: HeatmapChartDatum) => d.dateKey,
+      fill: (d: HeatmapChartDatum) => d.fill,
+      label: (d: HeatmapChartDatum) => (props.showInlineDetails ? d.inlineLabelLines : null),
+      labelColor: (d: HeatmapChartDatum) => d.labelFill,
+      labelMinCellSizePx: inlineDetailsMinCellSizePx.value,
+      cursor: 'default',
+      gapRem: GRID_GAP_REM,
+      cornerRadiusRem: GRID_CORNER_RADIUS_REM,
+      shapeRendering: 'auto'
+    })
+  }
 
   unovisTooltip = new Tooltip({
     container: document.body,
     className: 'chart-tooltip-portal',
     triggers: {
-      [HeatmapRectGridSelectors.cell]: tooltipTemplate!
+      [triggerSelector]: tooltipTemplate!
     }
   })
 
@@ -286,19 +430,30 @@ function initUnovis() {
 }
 
 onMounted(() => {
+  startChartHostObserver()
   if (containerEl.value) {
     initUnovis()
   }
 })
 
 onUnmounted(() => {
+  chartHostResizeObserver?.disconnect()
+  chartHostResizeObserver = null
   destroyUnovis()
 })
 
 // Reinitialize when chartData changes to ensure grid is properly updated
 // Use flush: 'post' to ensure DOM is updated before accessing containerEl
 watch(
-  chartData,
+  [
+    chartData,
+    () => props.height,
+    () => props.showInlineDetails,
+    inlineDetailsMinCellSizePx,
+    layoutMode,
+    weekColumnLeadingOffset,
+    chartHeightPx
+  ],
   () => {
     if (containerEl.value) {
       initUnovis()
@@ -337,7 +492,10 @@ watch(
       </div>
     </div>
 
-    <div :style="{ height: `${props.height}px` }">
+    <div
+      ref="chartHostEl"
+      :style="{ height: `${chartHeightPx}px` }"
+    >
       <ChartContainer :config="chartConfig">
         <div
           ref="containerEl"
